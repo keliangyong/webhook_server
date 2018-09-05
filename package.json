@@ -1,0 +1,22 @@
+{
+  "name": "webhook_server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/keliangyong/webhook_server.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/keliangyong/webhook_server/issues"
+  },
+  "homepage": "https://github.com/keliangyong/webhook_server#readme",
+  "dependencies": {
+    "hapi": "^17.5.4"
+  }
+}
