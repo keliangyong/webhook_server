@@ -60,6 +60,7 @@ server.route({
     handler: async function (request, h) {
         try {
             await sh(`cd /project/blog`);
+            await sh(`git pull origin master`);
             await sh('hexo clean && hexo g')
         } catch (error) {
             return JSON.stringify(error);
