@@ -26,7 +26,7 @@ server.route({
         const dir = encodeURIComponent(request.params.dir)
         try {
             const res = execSync(`cd /project/${dir} && git pull origin master`);
-            return res
+            return res.toString()
         } catch (error) {
             return error.message;
         }
@@ -40,7 +40,7 @@ server.route({
         const dir = encodeURIComponent(request.params.dir)
         try {
             const res = execSync(`cd /project/${dir} && git pull origin master && pm2 restart ${dir}`);
-            return res
+            return res.toString()
         } catch (error) {
             return error.message;
         }
@@ -54,7 +54,7 @@ server.route({
         const dir = encodeURIComponent(request.params.dir)
         try {
             const res = execSync(`cd /project/${dir} && git pull origin master && hexo clean && hexo g`);
-            return res
+            return res.toString()
         } catch (error) {
             return error.message;
         }
