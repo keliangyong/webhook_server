@@ -2,7 +2,7 @@
 
 const Hapi = require('hapi');
 const util = require('util');
-const { exec } = require('child_process');
+const { execSync } = require('child_process');
 
 // Create a server with a host and port
 const server = Hapi.server({
@@ -25,12 +25,8 @@ server.route({
     handler: async function (request, h) {
         const dir = encodeURIComponent(request.params.dir)
         try {
-            exec(`cd /project/${dir} && git pull origin master`, (error, stdout, stderr) => {
-                if (error) {
-                    return error.message;
-                }
-                return `stdout: ${stdout}`
-              });
+            const res = execSync(`cd /project/${dir} && git pull origin master`);
+            return res
         } catch (error) {
             return error.message;
         }
@@ -43,12 +39,8 @@ server.route({
     handler: async function (request, h) {
         const dir = encodeURIComponent(request.params.dir)
         try {
-            exec(`cd /project/${dir} && git pull origin master && pm2 restart ${dir}`, (error, stdout, stderr) => {
-                if (error) {
-                    return error.message;
-                }
-                return `stdout: ${stdout}`
-              });
+            const res = execSync(`cd /project/${dir} && git pull origin master && pm2 restart ${dir}`);
+            return res
         } catch (error) {
             return error.message;
         }
@@ -61,12 +53,8 @@ server.route({
     handler: async function (request, h) {
         const dir = encodeURIComponent(request.params.dir)
         try {
-            exec(`cd /project/${dir} && git pull origin master && hexo clean && hexo g`, (error, stdout, stderr) => {
-                if (error) {
-                    return error.message;
-                }
-                return `stdout: ${stdout}`
-              });
+            const res = execSync(`cd /project/${dir} && git pull origin master && hexo clean && hexo g`);
+            return res
         } catch (error) {
             return error.message;
         }
