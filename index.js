@@ -21,11 +21,11 @@ server.route({
 
 server.route({
     method: 'POST',
-    path: '/gitpull/{dir}',
+    path: '/web/{dir}',
     handler: async function (request, h) {
-        const path = encodeURIComponent(request.params.dir)
+        const dir = encodeURIComponent(request.params.dir)
         try {
-            exec('cd /project/${path} && git pull origin master', (error, stdout, stderr) => {
+            exec(`cd /project/${dir} && git pull origin master`, (error, stdout, stderr) => {
                 if (error) {
                     return JSON.stringify(error);
                 }
@@ -39,10 +39,28 @@ server.route({
 
 server.route({
     method: 'POST',
-    path: '/hexo',
+    path: '/node/{dir}',
+    handler: async function (request, h) {
+        const dir = encodeURIComponent(request.params.dir)
+        try {
+            exec(`cd /project/${dir} && git pull origin master && pm2 restart ${dir}`, (error, stdout, stderr) => {
+                if (error) {
+                    return JSON.stringify(error);
+                }
+                return `stdout: ${stdout}`
+              });
+        } catch (error) {
+            return JSON.stringify(error);
+        }
+    }
+});
+
+server.route({
+    method: 'POST',
+    path: '/hexo/{dir}',
     handler: async function (request, h) {
         try {
-            exec('cd /project/blog && git pull origin master && hexo clean && hexo g', (error, stdout, stderr) => {
+            exec(`cd /project/${dir} && git pull origin master && hexo clean && hexo g`, (error, stdout, stderr) => {
                 if (error) {
                     return JSON.stringify(error);
                 }
