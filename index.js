@@ -27,12 +27,12 @@ server.route({
         try {
             exec(`cd /project/${dir} && git pull origin master`, (error, stdout, stderr) => {
                 if (error) {
-                    return JSON.stringify(error);
+                    return error.message;
                 }
                 return `stdout: ${stdout}`
               });
         } catch (error) {
-            return JSON.stringify(error);
+            return error.message;
         }
     }
 });
@@ -45,12 +45,12 @@ server.route({
         try {
             exec(`cd /project/${dir} && git pull origin master && pm2 restart ${dir}`, (error, stdout, stderr) => {
                 if (error) {
-                    return JSON.stringify(error);
+                    return error.message;
                 }
                 return `stdout: ${stdout}`
               });
         } catch (error) {
-            return JSON.stringify(error);
+            return error.message;
         }
     }
 });
@@ -59,15 +59,16 @@ server.route({
     method: 'POST',
     path: '/hexo/{dir}',
     handler: async function (request, h) {
+        const dir = encodeURIComponent(request.params.dir)
         try {
             exec(`cd /project/${dir} && git pull origin master && hexo clean && hexo g`, (error, stdout, stderr) => {
                 if (error) {
-                    return JSON.stringify(error);
+                    return error.message;
                 }
                 return `stdout: ${stdout}`
               });
         } catch (error) {
-            return JSON.stringify(error);
+            return error.message;
         }
     }
 });
