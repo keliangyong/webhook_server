@@ -2,27 +2,7 @@
 
 const Hapi = require('hapi');
 const util = require('util');
-const cp = require('child_process');
-
-const sh = (cmd, stdin, opts) => new Promise((res, rej) => {
-    console.log('>', cmd);
-    var child = cp.exec(cmd, opts, err => {
-        if(err) rej(err);
-        else res();
-    });
-
-    if(util.isBuffer(stdin) || util.isString(stdin)) {
-        console.log('>>>', stdin.toString());
-        child.stdin.end(stdin);
-    }
-    else if(stdin && util.isFunction(stdin.pipe)) {
-        console.log('>>>', '<Stream>');
-        stdin.pipe(child.stdin);
-    }
-
-    child.stdout.pipe(process.stdout);
-    child.stderr.pipe(process.stderr);
-});
+const { exec } = require('child_process');
 
 // Create a server with a host and port
 const server = Hapi.server({
@@ -41,16 +21,19 @@ server.route({
 
 server.route({
     method: 'POST',
-    path: '/webhook/{dir}',
+    path: '/gitpull/{dir}',
     handler: async function (request, h) {
         const path = encodeURIComponent(request.params.dir)
         try {
-            await sh(`cd /project/${path}`);
-            await sh('git pull')
+            exec('cd /project/${path} && git pull origin master', (error, stdout, stderr) => {
+                if (error) {
+                    return JSON.stringify(error);
+                }
+                return `stdout: ${stdout}`
+              });
         } catch (error) {
             return JSON.stringify(error);
         }
-        return `success`;
     }
 });
 
@@ -59,13 +42,15 @@ server.route({
     path: '/hexo',
     handler: async function (request, h) {
         try {
-            await sh(`cd /project/blog`);
-            await sh(`git pull origin master`);
-            await sh('hexo clean && hexo g')
+            exec('cd /project/blog && git pull origin master && hexo clean && hexo g', (error, stdout, stderr) => {
+                if (error) {
+                    return JSON.stringify(error);
+                }
+                return `stdout: ${stdout}`
+              });
         } catch (error) {
             return JSON.stringify(error);
         }
-        return `success`;
     }
 });
 
