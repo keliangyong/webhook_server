@@ -15,7 +15,7 @@ server.route({
     method: 'GET',
     path: '/hello',
     handler: function (request, h) {
-        return 'hello world';
+        return 'hello world1';
     }
 });
 
@@ -39,7 +39,8 @@ server.route({
     handler: async function (request, h) {
         const dir = encodeURIComponent(request.params.dir)
         try {
-            const res = execSync(`cd /project/${dir} && git pull origin master && pm2 restart ${dir}`);
+            execSync(`cd /project/${dir} && git pull origin master`);
+            const res = execSync(`pm2 restart ${dir}`);
             return res.toString()
         } catch (error) {
             return error.message;
